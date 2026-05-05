@@ -1,0 +1,102 @@
+{
+  "entities": {
+    "Transaction": {
+      "title": "Transaction",
+      "description": "A single financial transaction (income or expense).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "description": { "type": "string" },
+        "amount": { "type": "number" },
+        "category": { "type": "string" },
+        "paid": { "type": "boolean" },
+        "date": { "type": "string" },
+        "dueDate": { "type": "string" },
+        "group": { "type": "string" },
+        "paidAt": { "type": "string" },
+        "isDistribution": { "type": "boolean" },
+        "isSuspended": { "type": "boolean" },
+        "suspendedUntil": { "type": "string" },
+        "skipped": { "type": "boolean" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["id", "description", "amount", "category", "paid"]
+    },
+    "Goal": {
+      "title": "Financial Goal",
+      "description": "A goal for saving or spending.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "category": { "type": "string" },
+        "amount": { "type": "number" },
+        "name": { "type": "string" },
+        "linkedTransactionId": { "type": "string" }
+      },
+      "required": ["id", "category", "amount"]
+    },
+    "BankAccount": {
+      "title": "Bank Account",
+      "description": "Balance for a specific account.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "balance": { "type": "number" }
+      },
+      "required": ["id", "name", "balance"]
+    },
+    "DebtSettlement": {
+      "title": "Debt Settlement",
+      "description": "Record of a debt being settled.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "description": { "type": "string" },
+        "amount": { "type": "number" },
+        "priority": { "type": "number" },
+        "isPaid": { "type": "boolean" },
+        "notes": { "type": "string" },
+        "targetMonth": { "type": "string" }
+      },
+      "required": ["id", "description", "amount", "priority", "isPaid"]
+    },
+    "MonthData": {
+      "title": "Monthly Financial Data",
+      "description": "Financial records for a specific month and family.",
+      "type": "object",
+      "properties": {
+        "incomes": { "type": "array", "items": { "$ref": "Transaction" } },
+        "expenses": { "type": "array", "items": { "$ref": "Transaction" } },
+        "shoppingItems": { "type": "array", "items": { "$ref": "Transaction" } },
+        "avulsosItems": { "type": "array", "items": { "$ref": "Transaction" } },
+        "goals": { "type": "array", "items": { "$ref": "Goal" } },
+        "bankAccounts": { "type": "array", "items": { "$ref": "BankAccount" } },
+        "bankReserves": {
+          "type": "object",
+          "properties": {
+            "santander": { "type": "number" },
+            "inter": { "type": "number" },
+            "sofisa": { "type": "number" }
+          }
+        },
+        "checkIn": {
+          "type": "object",
+          "properties": {
+            "isDone": { "type": "boolean" },
+            "date": { "type": "string" }
+          }
+        },
+        "debtSettlements": { "type": "array", "items": { "$ref": "DebtSettlement" } },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["incomes", "expenses", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/families/{familyId}/months/{yearMonth}": {
+      "schema": "MonthData",
+      "description": "Financial data for a family in a specific year and month."
+    }
+  }
+}
