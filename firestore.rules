@@ -26,24 +26,24 @@ service cloud.firestore {
     // Strict validation for a single transaction
     function isValidTransaction(t) {
       return t is map 
-          && t.id is string && t.id.size() <= 100
-          && t.description is string && t.description.size() <= 200
+          && t.id is string && t.id.size() <= 128
+          && t.description is string && t.description.size() <= 256
           && t.amount is number
-          && t.category is string && t.category.size() <= 50
+          && t.category is string && t.category.size() <= 64
           && t.paid is bool
-          && (t.dueDate == null || (t.dueDate is string && t.dueDate.size() <= 20))
-          && (t.paidAt == null || (t.paidAt is string && t.paidAt.size() <= 50))
-          && (t.group == null || (t.group is string && t.group.size() <= 50))
+          && (t.dueDate == null || (t.dueDate is string && t.dueDate.size() <= 32))
+          && (t.paidAt == null || (t.paidAt is string && t.paidAt.size() <= 128))
+          && (t.group == null || (t.group is string && t.group.size() <= 128))
           && (t.isSuspended == null || t.isSuspended is bool)
-          && (t.updatedAt == null || t.updatedAt is number);
+          && (t.updatedAt == null || t.updatedAt is number || t.updatedAt is timestamp);
     }
 
     // Strict validation for MonthData
     function isValidMonthData(data) {
       return data is map
           && data.keys().hasAll(['incomes', 'expenses', 'updatedAt'])
-          && data.keys().size() <= 10
-          && data.updatedAt is number
+          && data.keys().size() <= 12
+          && (data.updatedAt is timestamp || data.updatedAt is number)
           && data.incomes is list && data.incomes.size() <= 200
           && data.expenses is list && data.expenses.size() <= 200
           && (data.avulsosItems == null || (data.avulsosItems is list && data.avulsosItems.size() <= 200))
@@ -62,27 +62,22 @@ service cloud.firestore {
       allow get: if isSignedIn() && isValidId(familyId) && isValidId(yearMonth);
       
       // 8. Secure List Queries
-      // We explicitly check familyId. In a production app, we'd check if request.auth.uid belongs to this family.
-      // For this remix, we allow authenticated users to access the shared familyId or their own.
       allow list: if isSignedIn() && isValidId(familyId);
 
       allow create: if isSignedIn() 
           && isValidId(familyId) 
           && isValidId(yearMonth)
           && isValidMonthData(incoming())
-          // Ensure updatedAt is current or reasonable
-          && incoming().updatedAt > 0;
+          && (incoming().updatedAt == request.time || incoming().updatedAt == request.time.toMillis());
 
       allow update: if isSignedIn() 
           && isValidId(familyId) 
           && isValidId(yearMonth)
           && isValidMonthData(incoming())
-          // 4. Tiered Identity Logic: Ensure only newer data overwrites
-          && (incoming().updatedAt >= existing().updatedAt)
-          // 2. Validation Blueprints (The "Anti-Update-Gap")
-          // We allow the whole document to be updated as it's a single state blob.
-          // But we could restrict certain fields if needed.
-          && incoming().updatedAt == request.time.toMillis();
+          && (
+            (incoming().updatedAt is timestamp && incoming().updatedAt == request.time)
+            || (incoming().updatedAt is number && incoming().updatedAt == request.time.toMillis())
+          );
           
       allow delete: if false; // 1. The Invariant: No deletion allowed from client
     }

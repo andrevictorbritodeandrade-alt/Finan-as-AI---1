@@ -140,15 +140,15 @@ const App: React.FC = () => {
         saveData({ ...monthData, debtSettlements: newSettlements }, currentYear, currentMonth);
     };
 
-    // Force refresh to pull updated categories and grouping (v39) - Restore June salary and move Iago expenses
+    // Force refresh to pull updated categories and grouping (v42) - Update POVZITRA amount
     useEffect(() => {
-        const forceUpdateV39 = localStorage.getItem('force_update_v39_fix_jun');
-        if (!forceUpdateV39) {
+        const forceUpdateV42 = localStorage.getItem('force_update_v42_povzitra');
+        if (!forceUpdateV42) {
             localStorage.removeItem('financeData_2026_5');
             localStorage.removeItem('financeData_2026_6');
             localStorage.removeItem('financeData_2026_7');
             localStorage.removeItem('financeData_2026_8');
-            localStorage.setItem('force_update_v39_fix_jun', 'true');
+            localStorage.setItem('force_update_v42_povzitra', 'true');
             window.location.reload();
         }
     }, []);

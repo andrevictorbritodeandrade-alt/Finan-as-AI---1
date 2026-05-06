@@ -83,13 +83,6 @@ export const generateMonthData = (year: number, month: number): MonthData => {
     }
 
     // --- 13º SALÁRIO LOGIC ---
-    if (month === 7) {
-        const amount13 = 1718.11; 
-        newIncomes.push(
-            { id: `inc_13_1_m_${year}`, description: '1ª PARCELA 13º MARCELLY', amount: amount13, paid: false, date: `${prevYear}-06-26`, category: 'Salário' },
-            { id: `inc_13_1_a_${year}`, description: '1ª PARCELA 13º ANDRÉ', amount: amount13, paid: false, date: `${prevYear}-06-26`, category: 'Salário' }
-        );
-    }
     if (month === 1) {
         const amount13_2 = 1500.00; 
         newIncomes.push(
@@ -148,6 +141,10 @@ export const generateMonthData = (year: number, month: number): MonthData => {
             if (paidInApr2026.some(p => c.description.toUpperCase().includes(p))) isPaid = true;
         }
 
+        if (year === 2026 && month === 5) {
+            if (c.group === 'MARCIA BRITO') isPaid = true;
+        }
+
         // Force UNPAID for June 2026 onwards as requested
         if (isJune2026OrLater) {
             isPaid = false;
@@ -201,7 +198,7 @@ export const generateMonthData = (year: number, month: number): MonthData => {
         { desc: "PASSAGENS AÉREAS SP X JOBURG", totalAmount: 4038.96, cat: "Lazer", day: 4, installments: 8, sY: 2025, sM: 12, group: 'LILI TORRES' },
         { desc: "CIDADANIA PORTUGUESA", totalAmount: 5180.00, cat: "Dívidas", day: 12, installments: 37, sY: 2024, sM: 11, group: 'REBECCA BRITO' },
         { desc: "PASSEIO DE SAFARI", totalAmount: 3429.60, cat: "Lazer", day: 10, installments: 6, sY: 2026, sM: 3, group: 'JADY' },
-        { desc: "POVIZTRA (IAGO)", totalAmount: 850.00, cat: "Iago", day: 7, installments: 2, sY: 2026, sM: 6, group: 'IAGO' },
+        { desc: "POVIZTRA (IAGO)", totalAmount: 935.02, cat: "Iago", day: 7, installments: 2, sY: 2026, sM: 6, group: 'IAGO' },
         { 
           desc: "EMPRÉSTIMO COM MARCIA BISPO", 
           totalAmount: 1100.00, 
@@ -241,6 +238,10 @@ export const generateMonthData = (year: number, month: number): MonthData => {
             // Force UNPAID for June 2026 onwards
             if (isJune2026OrLater) {
                 isPaid = false;
+            }
+
+            if (year === 2026 && month === 5) {
+                if (f.group === 'MARCIA BRITO') isPaid = true;
             }
 
             const installmentAmount = f.totalAmount / f.installments;
