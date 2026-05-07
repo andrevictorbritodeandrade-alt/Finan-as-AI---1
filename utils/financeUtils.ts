@@ -166,7 +166,10 @@ export const generateMonthData = (year: number, month: number): MonthData => {
     if (year === 2026 && month === 6) {
         newExpenses.push(
             { id: `exp_iago_fuel_jun`, description: "ABASTECIMENTO IAGO (DE MAIO)", amount: 335.50, category: "Transporte", paid: false, dueDate: "2026-06-05", group: "IAGO" },
-            { id: `exp_iago_cel_jun`, description: "CLAROFLEX ANDRE MARCELLY (DE MAIO)", amount: 34.90, category: "Moradia", paid: false, dueDate: "2026-06-05", group: "IAGO" }
+            { id: `exp_iago_cel_jun`, description: "CLAROFLEX ANDRE MARCELLY (DE MAIO)", amount: 34.90, category: "Moradia", paid: false, dueDate: "2026-06-05", group: "IAGO" },
+            { id: `exp_iago_cel_andre_jun`, description: "CLAROFLEX ANDRÉ", amount: 44.90, category: "Moradia", paid: false, dueDate: "2026-06-05", group: "IAGO" },
+            { id: `exp_iago_sweets_jun`, description: "LOJA DE DOCES", amount: 20.48, category: "Alimentação", paid: false, dueDate: "2026-06-05", group: "IAGO" },
+            { id: `exp_iago_exam_jun`, description: "EXAME ADMISSIONAL", amount: 30.00, category: "Saúde", paid: false, dueDate: "2026-06-05", group: "IAGO" }
         );
     }
 
